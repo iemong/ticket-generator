@@ -26,7 +26,7 @@ export default function Index() {
       <h1>Welcome to Remix</h1>
       <ul>
         {tickets.map((t, i) => (
-          <li key={i}>{JSON.stringify(t)}</li>
+          <li className={'w-[500px]'} key={i}>{JSON.stringify(t)}</li>
         ))}
       </ul>
     </div>
