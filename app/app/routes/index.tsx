@@ -1,9 +1,7 @@
-import { Heading } from '@chakra-ui/react'
-
 export default function Index() {
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', lineHeight: '1.4' }}>
-      <Heading>Welcome to Remix</Heading>
+      <h1>Welcome to Remix</h1>
       <ul>
         <li>
           <a
