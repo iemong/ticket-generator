@@ -2,6 +2,7 @@ import React from 'react'
 
 type Props = {
   id: string
+  name: string
   labelText: string
   required?: boolean
   className?: string
@@ -9,6 +10,7 @@ type Props = {
 
 const FormInput: React.VFC<Props> = ({
   id,
+  name,
   labelText,
   required = false,
   className,
@@ -20,6 +22,7 @@ const FormInput: React.VFC<Props> = ({
         htmlFor={id}
       >{`${labelText}${required ? '*' : ''}`}</label>
       <input
+        name={name}
         type="text"
         className={'block p-[8px] w-full h-[56px] rounded-[10px] border-4'}
         id={id}

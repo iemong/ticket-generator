@@ -1,11 +1,9 @@
 import {
   ActionFunction,
   Form,
-  Link,
   LoaderFunction,
   redirect,
   useActionData,
-  useLoaderData,
 } from 'remix'
 import { createClient } from '@supabase/supabase-js'
 import Header from '~/components/Header'
@@ -32,7 +30,7 @@ export const loader: LoaderFunction = async ({ context }) => {
   return data
 }
 
-export const action: ActionFunction = async ({ context }) => {
+export const action: ActionFunction = async ({ request, context }) => {
   const supabase = createClient(
     context.SUPABASE_URL ?? '',
     context.SUPABASE_ANON_KEY ?? '',
@@ -41,24 +39,29 @@ export const action: ActionFunction = async ({ context }) => {
     }
   )
 
+  const formData = await request.formData()
+  const name = formData.get('name')
+  const description = formData.get('description')
+
   const { data, error } = await supabase
     .from('ticket')
-    .insert([{ name: '肩たたき券', user_id: 1 }])
+    .insert([{ name, description, user_id: 1 }])
+    .single()
 
   if (error) {
     return error
   }
 
-  return redirect('/')
+  return redirect(`/tickets/${data.key}`)
 }
 
+// TODO 入力部分と共通部分分ける
+// TODO validation
 export default function Index() {
-  const tickets = useLoaderData<Ticket[]>()
   const error = useActionData()
 
   return (
     <div>
-      <Header />
       <main className={'px-[16px] mt-[48px] sm:px-[32px]'}>
         <Headline as="h2" className={'mb-[48px]'}>
           チケットをつくる
@@ -67,11 +70,13 @@ export default function Index() {
           {error && <p>{JSON.stringify(error)}</p>}
           <FormInput
             id={'name'}
+            name={'name'}
             labelText={'チケットの名前'}
             required={true}
             className={'mb-[24px]'}
           />
           <FormTextarea
+            name={'description'}
             id={'description'}
             labelText={'説明'}
             className={'mb-[60px]'}

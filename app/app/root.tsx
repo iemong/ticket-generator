@@ -9,6 +9,7 @@ import {
 } from 'remix'
 import type { MetaFunction } from 'remix'
 import styles from '~/styles/generated.css'
+import Header from '~/components/Header'
 
 export const meta: MetaFunction = () => {
   return { title: 'New Remix App' }
@@ -27,6 +28,7 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <Header />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
