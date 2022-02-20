@@ -8,6 +8,11 @@ import {
   useLoaderData,
 } from 'remix'
 import { createClient } from '@supabase/supabase-js'
+import Header from '~/components/Header'
+import Headline from '~/components/Headline'
+import FormInput from '~/components/FormInput'
+import FormTextarea from '~/components/FormTextarea'
+import Button from '~/components/Button'
 
 type Ticket = {
   name: string
@@ -51,21 +56,29 @@ export default function Index() {
   const tickets = useLoaderData<Ticket[]>()
   const error = useActionData()
 
-  console.log(tickets)
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', lineHeight: '1.4' }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        {tickets.map((t) => (
-          <li className={'w-[500px]'} key={t.key}>
-            <Link to={`/tickets/${t.key}`}>{t.name}</Link>
-          </li>
-        ))}
-      </ul>
-      <Form method="post">
-        {error && <p>{JSON.stringify(error)}</p>}
-        <button type="submit">券を作成</button>
-      </Form>
+    <div>
+      <Header />
+      <main className={'px-[16px] mt-[48px] sm:px-[32px]'}>
+        <Headline as="h2" className={'mb-[48px]'}>
+          チケットをつくる
+        </Headline>
+        <Form method="post">
+          {error && <p>{JSON.stringify(error)}</p>}
+          <FormInput
+            id={'name'}
+            labelText={'チケットの名前'}
+            required={true}
+            className={'mb-[24px]'}
+          />
+          <FormTextarea
+            id={'description'}
+            labelText={'説明'}
+            className={'mb-[60px]'}
+          />
+          <Button type="submit">券を作成</Button>
+        </Form>
+      </main>
     </div>
   )
 }
