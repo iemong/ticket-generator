@@ -6,29 +6,10 @@ import {
   useActionData,
 } from 'remix'
 import { createClient } from '@supabase/supabase-js'
-import Header from '~/components/Header'
 import Headline from '~/components/Headline'
 import FormInput from '~/components/FormInput'
 import FormTextarea from '~/components/FormTextarea'
 import Button from '~/components/Button'
-
-type Ticket = {
-  name: string
-  key: string
-  id: number
-}
-
-export const loader: LoaderFunction = async ({ context }) => {
-  const supabase = createClient(
-    context.SUPABASE_URL ?? '',
-    context.SUPABASE_ANON_KEY ?? '',
-    {
-      fetch: (...args) => fetch(...args),
-    }
-  )
-  const { data } = await supabase.from<Ticket>('ticket').select()
-  return data
-}
 
 export const action: ActionFunction = async ({ request, context }) => {
   const supabase = createClient(

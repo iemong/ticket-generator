@@ -12,7 +12,7 @@ const Headline: React.VFC<Props> = ({
   className,
 }: Props) => {
   return (
-    <CustomTag className={`text-[36px] font-bold leading-6 ${className}`}>
+    <CustomTag className={`text-[36px] font-bold leading-[1.5] ${className}`}>
       {children}
     </CustomTag>
   )
