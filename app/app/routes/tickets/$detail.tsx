@@ -4,26 +4,30 @@ import {
   Form,
   LoaderFunction,
   MetaFunction,
-  redirect,
   useActionData,
   useLoaderData,
 } from 'remix'
-import { createClient } from '@supabase/supabase-js'
 import TicketCardDetail from '~/components/TicketCardDetail'
 import { Ticket } from '~/types/Tiket'
 import Headline from '~/components/Headline'
 import Button from '~/components/Button'
 import { HtmlMetaDescriptor } from '@remix-run/server-runtime/routeModules'
 import { supabase } from '~/utils/supabase'
+import { DOMAIN_NAME } from '~/utils/const'
 
 const SITE_NAME = 'Ticket Generator'
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = ({ data, params, location }) => {
   const d = data as Ticket
   return {
     title: `${d.name} | ${SITE_NAME}`,
     description: d.description,
+    'og:title': `${d.name} | ${SITE_NAME}`,
+    'og:description': d.description,
     'og:image': `https://text-pict.vercel.app/${d.name}`,
+    'og:url': `${DOMAIN_NAME}${location.pathname}`,
+    'og:type': 'website',
+    'twitter:card': 'summary_large_image',
   } as HtmlMetaDescriptor
 }
 
