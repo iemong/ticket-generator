@@ -25,6 +25,7 @@ const FormInput: React.VFC<Props> = ({
         name={name}
         type="text"
         className={'block p-[8px] w-full h-[56px] rounded-[10px] border-4'}
+        required={required}
         id={id}
       />
     </div>

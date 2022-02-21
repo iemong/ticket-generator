@@ -74,6 +74,7 @@ const Header: React.VFC = () => {
                   className={
                     'block py-[8px] px-[16px] text-white hover:opacity-[0.7] transition-opacity'
                   }
+                  onClick={() => setIsShowing((isShowing) => !isShowing)}
                 >
                   チケットを作成
                 </Link>
@@ -84,6 +85,7 @@ const Header: React.VFC = () => {
                   className={
                     'block py-[8px] px-[16px] text-white hover:opacity-[0.7] transition-opacity'
                   }
+                  onClick={() => setIsShowing((isShowing) => !isShowing)}
                 >
                   チケット一覧
                 </Link>
