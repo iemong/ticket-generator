@@ -1,11 +1,20 @@
 import React, { useCallback } from 'react'
-import { LoaderFunction, MetaFunction, useLoaderData } from 'remix'
+import {
+  ActionFunction,
+  Form,
+  LoaderFunction,
+  MetaFunction,
+  redirect,
+  useActionData,
+  useLoaderData,
+} from 'remix'
 import { createClient } from '@supabase/supabase-js'
 import TicketCardDetail from '~/components/TicketCardDetail'
 import { Ticket } from '~/types/Tiket'
 import Headline from '~/components/Headline'
 import Button from '~/components/Button'
 import { HtmlMetaDescriptor } from '@remix-run/server-runtime/routeModules'
+import { supabase } from '~/utils/supabase'
 
 const SITE_NAME = 'Ticket Generator'
 
@@ -19,14 +28,7 @@ export const meta: MetaFunction = ({ data }) => {
 }
 
 export const loader: LoaderFunction = async ({ params, context }) => {
-  const supabase = createClient(
-    context.SUPABASE_URL ?? '',
-    context.SUPABASE_ANON_KEY ?? '',
-    {
-      fetch: (...args) => fetch(...args),
-    }
-  )
-  const { data } = await supabase
+  const { data } = await supabase(context)
     .from<Ticket>('ticket')
     .select('name, key, active, description')
     .filter('key', 'eq', params.detail)
@@ -35,12 +37,23 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   return data
 }
 
+export const action: ActionFunction = async ({ request, context }) => {
+  const formData = await request.formData()
+  const key = formData.get('key')
+
+  const { error } = await supabase(context)
+    .from('ticket')
+    .update({ active: false })
+    .match({ key })
+
+  if (error) {
+    return error
+  }
+}
+
 const TicketDetail: React.VFC = () => {
   const detail = useLoaderData<Ticket>()
-
-  const handleTicketUseClick = useCallback(() => {
-    console.log('use')
-  }, [])
+  const error = useActionData()
 
   return (
     <main className={'px-[16px] mt-[48px] sm:px-[32px]'}>
@@ -54,13 +67,18 @@ const TicketDetail: React.VFC = () => {
           isActive={detail.active}
           description={detail.description}
         />
-        <Button
-          className={'mt-[60px]'}
-          disabled={!detail.active}
-          onClick={handleTicketUseClick}
-        >
-          {detail.active ? '使用する' : '使用済み'}
-        </Button>
+        <Form method="post">
+          {error && <p>{JSON.stringify(error)}</p>}
+          <input type="hidden" name={'key'} value={detail.key} />
+          <Button
+            type={'submit'}
+            className={'mt-[60px]'}
+            disabled={!detail.active}
+            // onClick={handleTicketUseClick}
+          >
+            {detail.active ? '使用する' : '使用済み'}
+          </Button>
+        </Form>
       </div>
     </main>
   )

@@ -38,7 +38,7 @@ const TicketCard: React.VFC<Props> = ({
       >
         <p
           className={
-            'text-[20px] font-bold leading-[1.5] text-center text-white'
+            `text-[12px] sm:text-[20px] font-bold leading-[1.5] text-center ${isActive ? 'text-white' : 'text-gray'}`
           }
         >
           ID: {ticketKey}
