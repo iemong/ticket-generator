@@ -17,14 +17,14 @@ import { DOMAIN_NAME } from '~/utils/const'
 
 const SITE_NAME = 'Ticket Generator'
 
-export const meta: MetaFunction = ({ data, params, location }) => {
+export const meta: MetaFunction = ({ data, location }) => {
   const d = data as Ticket
   return {
     title: `${d.name} | ${SITE_NAME}`,
     description: d.description,
     'og:title': `${d.name} | ${SITE_NAME}`,
     'og:description': d.description,
-    'og:image': `https://text-pict.vercel.app/${d.name}`,
+    'og:image': `https://text-pict.vercel.app/${decodeURI(d.name)}`,
     'og:url': `${DOMAIN_NAME}${location.pathname}`,
     'og:type': 'website',
     'twitter:card': 'summary_large_image',
@@ -60,7 +60,7 @@ const TicketDetail: React.VFC = () => {
   const error = useActionData()
 
   return (
-    <main className={'px-[16px] mt-[48px] sm:px-[32px]'}>
+    <main className={'px-[16px] pb-[60px] mt-[48px] sm:px-[32px]'}>
       <Headline as="h2" className={'mb-[48px]'}>
         チケット詳細
       </Headline>
