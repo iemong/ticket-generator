@@ -23,7 +23,7 @@ const SITE_NAME = 'Ticket Generator'
 export const meta: MetaFunction = ({ data, location }) => {
   const d = data as Ticket
   return {
-    title: `${d.active ? '' : '【使用済み】'}${d.name} | ${SITE_NAME}`,
+    title: `${d.active ? '' : '【使用済み】 '}${d.name} | ${SITE_NAME}`,
     description: d.description,
     'og:title': `${d.name} | ${SITE_NAME}`,
     'og:description': d.description,
