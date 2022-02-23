@@ -59,6 +59,21 @@ const TicketDetail: React.VFC = () => {
   const detail = useLoaderData<Ticket>()
   const error = useActionData()
 
+  const handleShareClick = useCallback(async () => {
+    const res = await fetch(
+      `https://text-pict.vercel.app/${encodeURI(detail.name)}`
+    )
+    const blobData = await res.blob()
+    const imageFile = new File([blobData], `${detail.name}.png`, {
+      type: 'image/png',
+    })
+    await navigator.share({
+      text: 'チケットをあげる',
+      url: `${DOMAIN_NAME}${location.pathname}`,
+      files: [imageFile],
+    })
+  }, [])
+
   return (
     <main className={'px-[16px] pb-[60px] mt-[48px] sm:px-[32px]'}>
       <Headline as="h2" className={'mb-[48px]'}>
@@ -78,11 +93,13 @@ const TicketDetail: React.VFC = () => {
             type={'submit'}
             className={'mt-[60px]'}
             disabled={!detail.active}
-            // onClick={handleTicketUseClick}
           >
             {detail.active ? '使用する' : '使用済み'}
           </Button>
         </Form>
+        <Button className={'mt-[24px]'} onClick={handleShareClick}>
+          シェアする
+        </Button>
       </div>
     </main>
   )
