@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   ActionFunction,
   Form,
@@ -15,6 +15,8 @@ import Button from '~/components/Button'
 import { HtmlMetaDescriptor } from '@remix-run/server-runtime/routeModules'
 import { supabase } from '~/utils/supabase'
 import { DOMAIN_NAME } from '~/utils/const'
+import { useUA } from '~/hooks/useUA'
+import { useToast } from '~/hooks/useToast'
 
 const SITE_NAME = 'Ticket Generator'
 
@@ -61,6 +63,8 @@ export const action: ActionFunction = async ({ request, context }) => {
 const TicketDetail: React.VFC = () => {
   const detail = useLoaderData<Ticket>()
   const actionData = useActionData()
+  const { isMobile } = useUA()
+  const [toast] = useToast()
 
   const handleShareClick = useCallback(async () => {
     const res = await fetch(
@@ -75,6 +79,15 @@ const TicketDetail: React.VFC = () => {
       url: `${DOMAIN_NAME}${location.pathname}`,
       files: [imageFile],
     })
+  }, [])
+
+  const handleCopyURLClick = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(`${DOMAIN_NAME}${location.pathname}`)
+      toast({ message: 'クリップボードにコピーしました', type: 'success' })
+    } catch {
+      toast({ message: 'クリップボードのコピーに失敗しました', type: 'error' })
+    }
   }, [])
 
   return (
@@ -100,9 +113,15 @@ const TicketDetail: React.VFC = () => {
             {detail.active ? '使用する' : '使用済み'}
           </Button>
         </Form>
-        <Button className={'mt-[24px]'} onClick={handleShareClick}>
-          シェアする
-        </Button>
+        {isMobile ? (
+          <Button className={'mt-[24px]'} onClick={handleShareClick}>
+            シェアする
+          </Button>
+        ) : (
+          <Button className={'mt-[24px]'} onClick={handleCopyURLClick}>
+            チケットのURLをコピーする
+          </Button>
+        )}
       </div>
     </main>
   )
