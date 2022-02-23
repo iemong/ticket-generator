@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import {
   ActionFunction,
   Form,
+  json,
   LoaderFunction,
   MetaFunction,
   useActionData,
@@ -51,13 +52,15 @@ export const action: ActionFunction = async ({ request, context }) => {
     .match({ key })
 
   if (error) {
-    return error
+    return { res: null, error }
   }
+
+  return { res: json('ok'), error: null }
 }
 
 const TicketDetail: React.VFC = () => {
   const detail = useLoaderData<Ticket>()
-  const error = useActionData()
+  const actionData = useActionData()
 
   const handleShareClick = useCallback(async () => {
     const res = await fetch(
@@ -87,7 +90,7 @@ const TicketDetail: React.VFC = () => {
           description={detail.description}
         />
         <Form method="post">
-          {error && <p>{JSON.stringify(error)}</p>}
+          {actionData?.error && <p>{JSON.stringify(actionData.error)}</p>}
           <input type="hidden" name={'key'} value={detail.key} />
           <Button
             type={'submit'}
