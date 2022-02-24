@@ -17,6 +17,7 @@ import { supabase } from '~/utils/supabase'
 import { DOMAIN_NAME } from '~/utils/const'
 import { useUA } from '~/hooks/useUA'
 import { useToast } from '~/hooks/useToast'
+import { image2Blob, loadImage } from '~/utils/loadImage'
 
 const SITE_NAME = 'Ticket Generator'
 
@@ -67,17 +68,16 @@ const TicketDetail: React.VFC = () => {
   const [toast] = useToast()
 
   const handleShareClick = useCallback(async () => {
-    const res = await fetch(
-      `https://text-pict.vercel.app/${encodeURI(detail.name)}`,
-      {
-        mode: 'no-cors',
-      }
+    const img = await loadImage(
+      `https://text-pict.vercel.app/api?text=${encodeURI(detail.name)}`
     )
-    const blobData = await res.blob()
+    const blobData = await image2Blob(img)
+    if (!blobData) {
+      return
+    }
     const imageFile = new File([blobData], `${detail.name}.png`, {
       type: 'image/jpeg',
     })
-    console.log({ blobData, imageFile })
     await navigator.share({
       text: 'チケットをあげる',
       url: `${DOMAIN_NAME}${location.pathname}`,
@@ -127,6 +127,9 @@ const TicketDetail: React.VFC = () => {
               チケットのURLをコピーする
             </Button>
           ))}
+        <Button className={'mt-[24px]'} onClick={handleShareClick}>
+          シェアする
+        </Button>
       </div>
     </main>
   )
