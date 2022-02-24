@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({ request, context }) => {
 const TicketDetail: React.VFC = () => {
   const detail = useLoaderData<Ticket>()
   const actionData = useActionData()
-  const { isMobile } = useUA()
+  const { isMobile, isLoading } = useUA()
   const [toast] = useToast()
 
   const handleShareClick = useCallback(async () => {
@@ -116,15 +116,16 @@ const TicketDetail: React.VFC = () => {
             {detail.active ? '使用する' : '使用済み'}
           </Button>
         </Form>
-        {isMobile ? (
-          <Button className={'mt-[24px]'} onClick={handleShareClick}>
-            シェアする
-          </Button>
-        ) : (
-          <Button className={'mt-[24px]'} onClick={handleCopyURLClick}>
-            チケットのURLをコピーする
-          </Button>
-        )}
+        {isLoading &&
+          (isMobile ? (
+            <Button className={'mt-[24px]'} onClick={handleShareClick}>
+              シェアする
+            </Button>
+          ) : (
+            <Button className={'mt-[24px]'} onClick={handleCopyURLClick}>
+              チケットのURLをコピーする
+            </Button>
+          ))}
       </div>
     </main>
   )

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 export const useUA = () => {
   const [isMobile, setIsMobile] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (navigator.userAgentData) {
@@ -11,6 +12,7 @@ export const useUA = () => {
       const ua = navigator.userAgent
       setIsMobile(detectMobile(ua))
     }
+    setIsLoading(true)
   }, [])
 
   const detectMobile = (uaStr: string) => {
@@ -27,5 +29,5 @@ export const useUA = () => {
     return toMatch.some((toMatchItem) => uaStr.match(toMatchItem))
   }
 
-  return { isMobile }
+  return { isMobile, isLoading }
 }
