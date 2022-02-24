@@ -127,9 +127,6 @@ const TicketDetail: React.VFC = () => {
               チケットのURLをコピーする
             </Button>
           ))}
-        <Button className={'mt-[24px]'} onClick={handleShareClick}>
-          シェアする
-        </Button>
       </div>
     </main>
   )
