@@ -77,6 +77,7 @@ const TicketDetail: React.VFC = () => {
     const imageFile = new File([blobData], `${detail.name}.png`, {
       type: 'image/jpeg',
     })
+    console.log({ blobData, imageFile })
     await navigator.share({
       text: 'チケットをあげる',
       url: `${DOMAIN_NAME}${location.pathname}`,
