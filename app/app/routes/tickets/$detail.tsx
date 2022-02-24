@@ -68,7 +68,10 @@ const TicketDetail: React.VFC = () => {
 
   const handleShareClick = useCallback(async () => {
     const res = await fetch(
-      `https://text-pict.vercel.app/${encodeURI(detail.name)}`
+      `https://text-pict.vercel.app/${encodeURI(detail.name)}`,
+      {
+        mode: 'no-cors',
+      }
     )
     const blobData = await res.blob()
     const imageFile = new File([blobData], `${detail.name}.png`, {
