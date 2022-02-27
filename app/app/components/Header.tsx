@@ -1,9 +1,29 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { Link } from '@remix-run/react'
+import Button from '~/components/Button'
+import { supabaseClient } from '~/utils/supabase'
 
-const Header: React.VFC = () => {
+type Props = {
+  context: {
+    SUPABASE_URL: string
+    SUPABASE_ANON_KEY: string
+  }
+}
+
+const Header: React.VFC<Props> = ({ context }: Props) => {
   const [isShowing, setIsShowing] = useState(false)
+
+  const handleSignInViaGithub = useCallback(async () => {
+    const { user, session, error } = await supabaseClient({
+      url: context.SUPABASE_URL,
+      key: context.SUPABASE_ANON_KEY,
+    }).auth.signIn({
+      // provider can be 'github', 'google', 'gitlab', and more
+      provider: 'github',
+    })
+  }, [])
+
   return (
     <>
       <header
@@ -68,6 +88,16 @@ const Header: React.VFC = () => {
               />
             </button>
             <ul className={'mt-[48px]'}>
+              <li>
+                <div
+                  className={
+                    'block py-[8px] px-[16px] text-white hover:opacity-[0.7] transition-opacity'
+                  }
+                  onClick={handleSignInViaGithub}
+                >
+                  <Button>GitHubでログイン</Button>
+                </div>
+              </li>
               <li>
                 <Link
                   to={'/'}
