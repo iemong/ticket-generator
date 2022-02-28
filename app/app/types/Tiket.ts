@@ -4,4 +4,5 @@ export type Ticket = {
   id: number
   active: boolean
   description: string | null
+  user_id: string
 }

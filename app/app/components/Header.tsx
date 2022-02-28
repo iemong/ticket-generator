@@ -1,51 +1,12 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { Link } from '@remix-run/react'
 import Button from '~/components/Button'
-import { useToast } from '~/hooks/useToast'
-import { SupabaseContext } from '~/root'
+import { useAuth } from '~/hooks/useAuth'
 
-type Props = {
-  context: {
-    SUPABASE_URL: string
-    SUPABASE_ANON_KEY: string
-  }
-}
-
-const Header: React.VFC<Props> = ({ context }: Props) => {
+const Header: React.VFC = () => {
   const [isShowing, setIsShowing] = useState(false)
-
-  const [toast] = useToast()
-  const supabaseClient = useContext(SupabaseContext)
-
-  const handleSignInViaGithub = useCallback(async () => {
-    if (!supabaseClient) return
-    const { error } = await supabaseClient.auth.signIn({
-      // provider can be 'github', 'google', 'gitlab', and more
-      provider: 'github',
-    })
-    if (error) {
-      toast({ message: error?.message || '', type: 'error' })
-    }
-  }, [context])
-
-  const handleSignOut = useCallback(async () => {
-    if (!supabaseClient) return
-    const { error } = await supabaseClient.auth.signOut()
-    if (error) {
-      toast({ message: error?.message || '', type: 'error' })
-    }
-  }, [context])
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  useEffect(() => {
-    if (!supabaseClient) return
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session?.user)
-      console.log(_event, session)
-    })
-  }, [])
+  const { user, isLoggedIn, handleSignInViaGithub, handleSignOut } = useAuth()
 
   return (
     <>
@@ -154,6 +115,19 @@ const Header: React.VFC<Props> = ({ context }: Props) => {
                   チケット一覧
                 </Link>
               </li>
+              {isLoggedIn && user && (
+                <li>
+                  <Link
+                    to={`users/${user.id}/tickets`}
+                    className={
+                      'block py-[8px] px-[16px] text-white hover:opacity-[0.7] transition-opacity'
+                    }
+                    onClick={() => setIsShowing((isShowing) => !isShowing)}
+                  >
+                    自分のチケット一覧
+                  </Link>
+                </li>
+              )}
             </ul>
           </Transition.Child>
         </Transition>

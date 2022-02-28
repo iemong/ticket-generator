@@ -1,26 +1,26 @@
+import type { LoaderFunction, LinksFunction, MetaFunction } from 'remix'
 import {
   Links,
-  LinksFunction,
   LiveReload,
-  LoaderFunction,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
   useLoaderData,
 } from 'remix'
-import type { MetaFunction } from 'remix'
 import styles from '~/styles/generated.css'
 import Header from '~/components/Header'
 import { Slide, ToastContainer } from 'react-toastify'
 import React, { useMemo } from 'react'
 import ReactToastifyStyles from 'react-toastify/dist/ReactToastify.css'
 import { supabaseClient } from '~/utils/supabase'
-import { SupabaseClient } from '@supabase/supabase-js'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { RecoilRoot } from 'recoil'
 
 export const meta: MetaFunction = () => {
-  return { title: 'New Remix App' }
+  return { title: 'Ticket Generator' }
 }
+
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: styles },
@@ -46,7 +46,7 @@ export default function App() {
   )
 
   return (
-    <html lang="en">
+    <html lang="ja">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -55,24 +55,26 @@ export default function App() {
       </head>
       <body>
         <SupabaseContext.Provider value={sc}>
-          <Header context={env} />
-          <Outlet />
+          <RecoilRoot>
+            <Header />
+            <Outlet />
+            <ScrollRestoration />
+            <Scripts />
+            {process.env.NODE_ENV === 'development' && <LiveReload />}
+            <ToastContainer
+              position="top-center"
+              autoClose={2000}
+              hideProgressBar
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              transition={Slide}
+            />
+          </RecoilRoot>
         </SupabaseContext.Provider>
-        <ScrollRestoration />
-        <Scripts />
-        {process.env.NODE_ENV === 'development' && <LiveReload />}
-        <ToastContainer
-          position="top-center"
-          autoClose={2000}
-          hideProgressBar
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          transition={Slide}
-        />
       </body>
     </html>
   )
