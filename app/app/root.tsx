@@ -18,7 +18,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { RecoilRoot } from 'recoil'
 
 export const meta: MetaFunction = () => {
-  return { title: 'Ticket Generator' }
+  return { title: 'Ticket Generator', 'theme-color': '#111' }
 }
 
 export const links: LinksFunction = () => {
