@@ -5,6 +5,7 @@ type Props = {
   name: string
   labelText: string
   required?: boolean
+  placeholder?: string
   className?: string
 }
 
@@ -13,6 +14,7 @@ const FormInput: React.VFC<Props> = ({
   name,
   labelText,
   required = false,
+  placeholder,
   className,
 }: Props) => {
   return (
@@ -25,6 +27,7 @@ const FormInput: React.VFC<Props> = ({
         name={name}
         className={'block p-[8px] w-full h-[80px] rounded-[10px] border-4'}
         id={id}
+        placeholder={placeholder}
       />
     </div>
   )

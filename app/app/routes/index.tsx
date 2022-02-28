@@ -61,12 +61,14 @@ export default function Index() {
             labelText={'チケットの名前'}
             required={true}
             className={'mb-[24px]'}
+            placeholder={'肩たたき券'}
           />
           <FormTextarea
             name={'description'}
             id={'description'}
             labelText={'説明'}
             className={'mb-[60px]'}
+            placeholder={'肩を20回叩きます。'}
           />
           <Button type="submit">券を作成</Button>
         </Form>
