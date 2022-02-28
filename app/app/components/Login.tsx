@@ -1,14 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Auth, Typography, Button } from '@supabase/ui'
-import { supabaseClient } from '~/utils/supabase'
 import { SupabaseClient } from '@supabase/supabase-js'
-
-type Props = {
-  context: {
-    SUPABASE_URL: string
-    SUPABASE_ANON_KEY: string
-  }
-}
+import { SupabaseContext } from '~/root'
 
 type ContainerProps = {
   supabaseClient: SupabaseClient
@@ -29,21 +22,20 @@ const Container = (props: ContainerProps) => {
   return props.children
 }
 
-export default function AuthBasic({ context }: Props) {
-  const supabase = supabaseClient({
-    url: context.SUPABASE_URL,
-    key: context.SUPABASE_ANON_KEY,
-  })
+export default function AuthBasic() {
+  const supabaseClient = useContext(SupabaseContext)
 
-  return (
-    <Auth.UserContextProvider supabaseClient={supabase}>
-      <Container supabaseClient={supabase}>
+  return supabaseClient ? (
+    <Auth.UserContextProvider supabaseClient={supabaseClient}>
+      <Container supabaseClient={supabaseClient}>
         <Auth
           onlyThirdPartyProviders={true}
-          supabaseClient={supabase}
+          supabaseClient={supabaseClient}
           providers={['github']}
         />
       </Container>
     </Auth.UserContextProvider>
+  ) : (
+    <></>
   )
 }

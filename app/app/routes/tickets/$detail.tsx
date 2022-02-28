@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import {
   ActionFunction,
   Form,
@@ -18,6 +18,7 @@ import { DOMAIN_NAME } from '~/utils/const'
 import { useUA } from '~/hooks/useUA'
 import { useToast } from '~/hooks/useToast'
 import { image2Blob, loadImage } from '~/utils/loadImage'
+import { SupabaseContext } from '~/root'
 
 const SITE_NAME = 'Ticket Generator'
 
@@ -63,6 +64,8 @@ export const action: ActionFunction = async ({ request, context }) => {
 
 const TicketDetail: React.VFC = () => {
   const detail = useLoaderData<Ticket>()
+  const supabaseClient = useContext(SupabaseContext)
+  const user = supabaseClient?.auth.user()
   const actionData = useActionData()
   const { isMobile, isLoading } = useUA()
   const [toast] = useToast()

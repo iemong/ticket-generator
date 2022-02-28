@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { Link } from '@remix-run/react'
 import Button from '~/components/Button'
-import { supabaseClient } from '~/utils/supabase'
+import { useToast } from '~/hooks/useToast'
+import { SupabaseContext } from '~/root'
 
 type Props = {
   context: {
@@ -14,13 +15,35 @@ type Props = {
 const Header: React.VFC<Props> = ({ context }: Props) => {
   const [isShowing, setIsShowing] = useState(false)
 
+  const [toast] = useToast()
+  const supabaseClient = useContext(SupabaseContext)
+
   const handleSignInViaGithub = useCallback(async () => {
-    const { user, session, error } = await supabaseClient({
-      url: context.SUPABASE_URL,
-      key: context.SUPABASE_ANON_KEY,
-    }).auth.signIn({
+    if (!supabaseClient) return
+    const { error } = await supabaseClient.auth.signIn({
       // provider can be 'github', 'google', 'gitlab', and more
       provider: 'github',
+    })
+    if (error) {
+      toast({ message: error?.message || '', type: 'error' })
+    }
+  }, [context])
+
+  const handleSignOut = useCallback(async () => {
+    if (!supabaseClient) return
+    const { error } = await supabaseClient.auth.signOut()
+    if (error) {
+      toast({ message: error?.message || '', type: 'error' })
+    }
+  }, [context])
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    if (!supabaseClient) return
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session?.user)
+      console.log(_event, session)
     })
   }, [])
 
@@ -89,14 +112,25 @@ const Header: React.VFC<Props> = ({ context }: Props) => {
             </button>
             <ul className={'mt-[48px]'}>
               <li>
-                <div
-                  className={
-                    'block py-[8px] px-[16px] text-white hover:opacity-[0.7] transition-opacity'
-                  }
-                  onClick={handleSignInViaGithub}
-                >
-                  <Button>GitHubでログイン</Button>
-                </div>
+                {!isLoggedIn ? (
+                  <div
+                    className={
+                      'block py-[8px] px-[16px] text-white hover:opacity-[0.7] transition-opacity'
+                    }
+                    onClick={handleSignInViaGithub}
+                  >
+                    <Button>GitHubでログイン</Button>
+                  </div>
+                ) : (
+                  <div
+                    className={
+                      'block py-[8px] px-[16px] text-white hover:opacity-[0.7] transition-opacity'
+                    }
+                    onClick={handleSignOut}
+                  >
+                    <Button>ログアウト</Button>
+                  </div>
+                )}
               </li>
               <li>
                 <Link

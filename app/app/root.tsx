@@ -13,9 +13,10 @@ import type { MetaFunction } from 'remix'
 import styles from '~/styles/generated.css'
 import Header from '~/components/Header'
 import { Slide, ToastContainer } from 'react-toastify'
-import React, { useEffect } from 'react'
+import React, { useMemo } from 'react'
 import ReactToastifyStyles from 'react-toastify/dist/ReactToastify.css'
 import { supabaseClient } from '~/utils/supabase'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export const meta: MetaFunction = () => {
   return { title: 'New Remix App' }
@@ -34,23 +35,16 @@ export const loader: LoaderFunction = async ({ context }) => {
   }
 }
 
+export const SupabaseContext = React.createContext<SupabaseClient | null>(null)
+
 export default function App() {
   const env = useLoaderData()
-  useEffect(() => {
-    console.log('hoge')
 
-    const user = supabaseClient({
-      url: env.SUPABASE_URL,
-      key: env.SUPABASE_ANON_KEY,
-    }).auth.user()
+  const sc = useMemo(
+    () => supabaseClient({ url: env.SUPABASE_URL, key: env.SUPABASE_ANON_KEY }),
+    [env]
+  )
 
-    const session = supabaseClient({
-      url: env.SUPABASE_URL,
-      key: env.SUPABASE_ANON_KEY,
-    }).auth.session()
-
-    console.log(user, session)
-  }, [])
   return (
     <html lang="en">
       <head>
@@ -60,8 +54,10 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Header context={env} />
-        <Outlet />
+        <SupabaseContext.Provider value={sc}>
+          <Header context={env} />
+          <Outlet />
+        </SupabaseContext.Provider>
         <ScrollRestoration />
         <Scripts />
         {process.env.NODE_ENV === 'development' && <LiveReload />}

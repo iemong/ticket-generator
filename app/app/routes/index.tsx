@@ -10,6 +10,8 @@ import Headline from '~/components/Headline'
 import FormInput from '~/components/FormInput'
 import FormTextarea from '~/components/FormTextarea'
 import Button from '~/components/Button'
+import { useContext } from 'react'
+import { SupabaseContext } from '~/root'
 
 export const action: ActionFunction = async ({ request, context }) => {
   const supabase = createClient(
@@ -23,10 +25,11 @@ export const action: ActionFunction = async ({ request, context }) => {
   const formData = await request.formData()
   const name = formData.get('name')
   const description = formData.get('description')
+  const userId = formData.get('userId')
 
   const { data, error } = await supabase
     .from('ticket')
-    .insert([{ name, description, user_id: 1 }])
+    .insert([{ name, description, user_id: userId }])
     .single()
 
   if (error) {
@@ -40,6 +43,8 @@ export const action: ActionFunction = async ({ request, context }) => {
 // TODO validation
 export default function Index() {
   const error = useActionData()
+  const supabaseClient = useContext(SupabaseContext)
+  const user = supabaseClient?.auth.user()
 
   return (
     <div>
@@ -49,6 +54,7 @@ export default function Index() {
         </Headline>
         <Form method="post">
           {error && <p>{JSON.stringify(error)}</p>}
+          <input type="hidden" name="userId" value={user?.id} />
           <FormInput
             id={'name'}
             name={'name'}
