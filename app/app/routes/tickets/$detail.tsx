@@ -1,12 +1,12 @@
 import React, { useCallback, useContext } from 'react'
 import {
-  ActionFunction,
-  Form,
-  json,
-  LoaderFunction,
-  MetaFunction,
-  useActionData,
-  useLoaderData,
+    ActionFunction,
+    Form, HeadersFunction,
+    json,
+    LoaderFunction,
+    MetaFunction,
+    useActionData,
+    useLoaderData,
 } from 'remix'
 import TicketCardDetail from '~/components/TicketCardDetail'
 import { Ticket } from '~/types/Tiket'
@@ -18,9 +18,14 @@ import { DOMAIN_NAME } from '~/utils/const'
 import { useUA } from '~/hooks/useUA'
 import { useToast } from '~/hooks/useToast'
 import { image2Blob, loadImage } from '~/utils/loadImage'
-import { SupabaseContext } from '~/root'
 
 const SITE_NAME = 'Ticket Generator'
+
+export const headers: HeadersFunction = () => {
+    return {
+        'Cache-Control': 'public, s-maxage=86400, max-age=86400, stale-while-revalidate=30'
+    }
+}
 
 export const meta: MetaFunction = ({ data, location }) => {
   const d = data as Ticket
@@ -64,8 +69,6 @@ export const action: ActionFunction = async ({ request, context }) => {
 
 const TicketDetail: React.VFC = () => {
   const detail = useLoaderData<Ticket>()
-  const supabaseClient = useContext(SupabaseContext)
-  const user = supabaseClient?.auth.user()
   const actionData = useActionData()
   const { isMobile, isLoading } = useUA()
   const [toast] = useToast()

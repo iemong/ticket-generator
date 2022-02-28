@@ -1,10 +1,4 @@
-import {
-  ActionFunction,
-  Form,
-  LoaderFunction,
-  redirect,
-  useActionData,
-} from 'remix'
+import { ActionFunction, Form, redirect, useActionData } from 'remix'
 import { createClient } from '@supabase/supabase-js'
 import Headline from '~/components/Headline'
 import FormInput from '~/components/FormInput'
