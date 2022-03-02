@@ -34,7 +34,7 @@ export const meta: MetaFunction = ({ data, location }) => {
     description: d.description,
     'og:title': `${d.name} | ${SITE_NAME}`,
     'og:description': d.description,
-    'og:image': `https://text-pict.vercel.app/${encodeURI(d.name)}`,
+    'og:image': `https://text-pict.vercel.app/api?text=${encodeURI(d.name)}&t=ticket`,
     'og:url': `${DOMAIN_NAME}${location.pathname}`,
     'og:type': 'website',
     'twitter:card': 'summary_large_image',
