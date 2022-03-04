@@ -32,7 +32,7 @@ export const meta: MetaFunction = ({ data, location }) => {
   return {
     title: `${d.active ? '' : '【使用済み】 '}${d.name} | ${SITE_NAME}`,
     description: d.description,
-    'og:title': `${d.name} | ${SITE_NAME}`,
+    'og:title': `${d.active ? '' : '【使用済み】 '}${d.name} | ${SITE_NAME}`,
     'og:description': d.description,
     'og:image': `https://text-pict.vercel.app/api?text=${encodeURI(d.name)}&t=ticket`,
     'og:url': `${DOMAIN_NAME}${location.pathname}`,
