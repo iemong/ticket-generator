@@ -1,27 +1,19 @@
 import { ActionFunction, Form, redirect, useActionData } from 'remix'
-import { createClient } from '@supabase/supabase-js'
 import Headline from '~/components/Headline'
 import FormInput from '~/components/FormInput'
 import FormTextarea from '~/components/FormTextarea'
 import Button from '~/components/Button'
 import { useContext } from 'react'
 import { SupabaseContext } from '~/root'
+import { supabase } from '~/utils/supabase'
 
 export const action: ActionFunction = async ({ request, context }) => {
-  const supabase = createClient(
-    context.SUPABASE_URL ?? '',
-    context.SUPABASE_ANON_KEY ?? '',
-    {
-      fetch: (...args) => fetch(...args),
-    }
-  )
-
   const formData = await request.formData()
   const name = formData.get('name')
   const description = formData.get('description')
   const userId = formData.get('userId')
 
-  const { data, error } = await supabase
+  const { data, error } = await supabase(context)
     .from('ticket')
     .insert([{ name, description, user_id: userId }])
     .single()
