@@ -11,7 +11,7 @@ export const action: ActionFunction = async ({ request, context }) => {
   const formData = await request.formData()
   const name = formData.get('name')
   const description = formData.get('description')
-  const userId = formData.get('userId')
+  const userId = formData.get('userId') || null
 
   const { data, error } = await supabase(context)
     .from('ticket')
