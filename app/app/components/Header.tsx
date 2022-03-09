@@ -17,7 +17,9 @@ const Header: React.VFC = () => {
       >
         <div className={'w-[24px]'} />
         <h1 className={'mx-auto w-auto text-[18px] font-bold text-white'}>
-          Ticket Generator
+            <Link to={'/'}>
+                Ticket Generator
+            </Link>
         </h1>
         <div className={'w-[24px]'}>
           <button
